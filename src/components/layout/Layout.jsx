@@ -12,7 +12,7 @@ export const Layout = () => {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex bg-[#f5f6f3] text-slate-800">
+    <div className="min-h-screen flex bg-[#FAF7F2] text-[#39342F]">
       {/* Left Sidebar */}
       <Sidebar
         isMobileOpen={isMobileOpen}
