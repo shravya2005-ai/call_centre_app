@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, Phone, Bot, Target, Shield, Award, CheckCircle2, Flame } from 'lucide-react';
+import { Sparkles, Phone, Bot, Target } from 'lucide-react';
 import { useCall } from '../../context/CallContext';
 
 export const PractiseCallTab = () => {
@@ -44,26 +44,26 @@ export const PractiseCallTab = () => {
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
-      <div className="bg-gradient-to-br from-[#0e3025] to-[#09221a] text-white rounded-2xl p-6 border border-[#1b4d3c] shadow-md">
+      <div className="bg-[#62564C] text-white rounded-2xl p-6 border border-[#52473E] shadow-xs">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-xs font-semibold">
-              <Sparkles size={14} className="text-amber-400" />
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#52473E] text-[#FAF7F2] border border-[#76675B] text-xs font-semibold">
+              <Sparkles size={14} className="text-[#B69A78]" />
               <span>Pitch Coach AI Simulator</span>
             </div>
             <h2 className="text-xl font-bold text-white tracking-tight">
               Practise Outbound Calls in Safe Simulation
             </h2>
-            <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+            <p className="text-xs text-[#D4C9BD] max-w-xl leading-relaxed">
               Roleplay challenging retail walk-out objections with our AI Shopper persona before calling real prospects.
               Our Pitch Coach Agent scores your talk tracks against On-Ground's retail SOP benchmarks.
             </p>
           </div>
 
-          <div className="bg-[#143d30] p-4 rounded-xl border border-[#225544] text-center shrink-0">
-            <div className="text-xs text-slate-300">Your SOP Adherence</div>
-            <div className="text-2xl font-bold font-mono text-emerald-300 mt-0.5">94%</div>
-            <div className="text-[11px] text-amber-400 font-semibold mt-1">+23.6pp lift active</div>
+          <div className="bg-[#52473E] p-4 rounded-xl border border-[#6B5E53] text-center shrink-0">
+            <div className="text-xs text-[#D4C9BD]">Your SOP Adherence</div>
+            <div className="text-2xl font-bold font-mono text-[#FAF7F2] mt-0.5">94%</div>
+            <div className="text-[11px] text-[#B69A78] font-semibold mt-1">+23.6pp lift active</div>
           </div>
         </div>
       </div>
@@ -73,42 +73,42 @@ export const PractiseCallTab = () => {
         {scenarios.map((scen) => (
           <div
             key={scen.id}
-            className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between hover:shadow-md transition"
+            className="bg-white rounded-2xl border border-[#E8E0D6] p-5 shadow-xs flex flex-col justify-between hover:border-[#B69A78]/50 transition"
           >
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#FAF7F2] text-[#736B63] border border-[#E8E0D6]">
                   {scen.difficulty}
                 </span>
-                <span className="text-xs font-bold text-emerald-800 font-mono">{scen.brand}</span>
+                <span className="text-xs font-bold text-[#62564C] font-mono">{scen.brand}</span>
               </div>
 
-              <h3 className="text-sm font-bold text-slate-900 leading-snug">{scen.title}</h3>
-              <p className="text-xs text-slate-500 font-mono mt-0.5">Persona: {scen.customerName}</p>
+              <h3 className="text-sm font-bold text-[#39342F] leading-snug">{scen.title}</h3>
+              <p className="text-xs text-[#736B63] font-mono mt-0.5">Persona: {scen.customerName}</p>
 
-              <div className="mt-3 p-3 bg-amber-50/70 border border-amber-200/80 rounded-xl text-xs text-amber-950 space-y-1">
-                <div className="font-semibold text-amber-900 flex items-center gap-1">
-                  <Target size={12} />
+              <div className="mt-3 p-3 bg-[#F7F2EC] border border-[#E8E0D6] rounded-xl text-xs text-[#39342F] space-y-1">
+                <div className="font-semibold text-[#8E7252] flex items-center gap-1">
+                  <Target size={12} className="text-[#B69A78]" />
                   <span>Customer Objection</span>
                 </div>
-                <p className="text-[11px] leading-relaxed">{scen.objection}</p>
+                <p className="text-[11px] text-[#554D46] leading-relaxed">{scen.objection}</p>
               </div>
 
-              <div className="mt-3 p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-700 space-y-1">
-                <div className="font-semibold text-slate-900 flex items-center gap-1">
-                  <Bot size={12} className="text-emerald-700" />
+              <div className="mt-3 p-3 bg-[#FAF7F2] rounded-xl border border-[#E8E0D6] text-xs text-[#554D46] space-y-1">
+                <div className="font-semibold text-[#39342F] flex items-center gap-1">
+                  <Bot size={12} className="text-[#8E7252]" />
                   <span>Coach Tip</span>
                 </div>
-                <p className="text-[11px] text-slate-600 leading-relaxed">{scen.coachTip}</p>
+                <p className="text-[11px] text-[#736B63] leading-relaxed">{scen.coachTip}</p>
               </div>
             </div>
 
-            <div className="mt-5 pt-4 border-t border-slate-100">
+            <div className="mt-5 pt-4 border-t border-[#E8E0D6]/60">
               <button
                 onClick={() => startPracticeCall(scen)}
-                className="w-full py-2.5 rounded-xl bg-[#0e3025] hover:bg-[#164235] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-sm transition active:scale-95"
+                className="w-full py-2.5 rounded-xl bg-[#62564C] hover:bg-[#52473E] text-white text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition active:scale-95"
               >
-                <Phone size={14} className="text-amber-400" />
+                <Phone size={14} className="text-[#B69A78]" />
                 <span>Start Practice Call</span>
               </button>
             </div>

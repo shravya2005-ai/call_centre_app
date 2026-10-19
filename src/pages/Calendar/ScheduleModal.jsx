@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Calendar, Clock, User, Phone, FileText, CheckCircle2 } from 'lucide-react';
+import { X, Calendar } from 'lucide-react';
 import { useAppData } from '../../context/AppDataContext';
 
 export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
@@ -42,17 +42,17 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="bg-white border border-slate-200 text-slate-800 rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4 animate-in fade-in duration-200">
+      <div className="bg-white border border-[#E8E0D6] text-[#39342F] rounded-2xl w-full max-w-md shadow-2xl overflow-hidden flex flex-col">
         {/* Header */}
-        <div className="px-6 py-4 bg-[#0e3025] text-white flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#62564C] text-white flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Calendar size={18} className="text-amber-400" />
+            <Calendar size={18} className="text-[#B69A78]" />
             <h3 className="text-base font-bold text-white">Schedule Follow-up Call</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-emerald-200 hover:text-white hover:bg-white/10 transition"
+            className="p-1 rounded-lg text-[#E8E0D6] hover:text-white hover:bg-white/10 transition"
           >
             <X size={18} />
           </button>
@@ -61,7 +61,7 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs">
           <div>
-            <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block font-semibold text-[#736B63] uppercase tracking-wider mb-1">
               Select or Enter Lead
             </label>
             <div className="relative">
@@ -71,7 +71,7 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
                 value={leadName}
                 onChange={handleLeadSelect}
                 placeholder="Select lead name or type custom..."
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e3025]"
+                className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
                 required
               />
               <datalist id="leads-list">
@@ -85,7 +85,7 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
           </div>
 
           <div>
-            <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block font-semibold text-[#736B63] uppercase tracking-wider mb-1">
               Contact Phone Number
             </label>
             <input
@@ -93,33 +93,33 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+91 98..."
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e3025]"
+              className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
               required
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block font-semibold text-[#736B63] uppercase tracking-wider mb-1">
                 Date
               </label>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e3025]"
+                className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
                 required
               />
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block font-semibold text-[#736B63] uppercase tracking-wider mb-1">
                 Time
               </label>
               <input
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e3025]"
+                className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
                 required
               />
             </div>
@@ -127,13 +127,13 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block font-semibold text-[#736B63] uppercase tracking-wider mb-1">
                 Call Type
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none"
+                className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
               >
                 <option value="Closing Call">Closing Call</option>
                 <option value="Follow-up">Follow-up</option>
@@ -142,23 +142,23 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
               </select>
             </div>
             <div>
-              <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
+              <label className="block font-semibold text-[#736B63] uppercase tracking-wider mb-1">
                 Priority
               </label>
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none"
+                className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
               >
-                <option value="Hot">Hot 🔥</option>
-                <option value="Warm">Warm ⚡</option>
+                <option value="Hot">Hot</option>
+                <option value="Warm">Warm</option>
                 <option value="Normal">Normal</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block font-semibold text-slate-700 uppercase tracking-wider mb-1">
+            <label className="block font-semibold text-[#736B63] uppercase tracking-wider mb-1">
               Follow-up Agenda / Notes
             </label>
             <textarea
@@ -166,22 +166,22 @@ export const ScheduleModal = ({ isOpen, onClose, defaultDate }) => {
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="e.g. Verify HDFC credit card 0% EMI sanction code..."
-              className="w-full px-3 py-2 border border-slate-200 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#0e3025]"
+              className="w-full px-3 py-2 bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] placeholder:text-[#938A82] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
             />
           </div>
 
           {/* Footer */}
-          <div className="pt-2 flex items-center justify-end gap-2 border-t border-slate-100">
+          <div className="pt-2 flex items-center justify-end gap-2 border-t border-[#E8E0D6]/60">
             <button
               type="button"
               onClick={onClose}
-              className="px-3 py-2 text-slate-600 hover:text-slate-900 rounded-lg"
+              className="px-3 py-2 text-[#736B63] hover:text-[#39342F] rounded-lg transition"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-[#0e3025] hover:bg-[#164235] text-white font-semibold rounded-xl shadow-sm transition"
+              className="px-4 py-2 bg-[#62564C] hover:bg-[#52473E] text-white font-semibold rounded-xl shadow-xs transition"
             >
               Save Schedule
             </button>

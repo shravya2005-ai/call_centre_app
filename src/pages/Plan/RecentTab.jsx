@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import {
-  Phone,
   PhoneCall,
   Clock,
-  CheckCircle2,
-  Filter,
   Search,
-  Sparkles,
   ArrowRight,
   Headphones
 } from 'lucide-react';
@@ -35,15 +31,15 @@ export const RecentTab = () => {
   return (
     <div className="space-y-4">
       {/* Search and Filters */}
-      <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
+      <div className="bg-white p-4 rounded-2xl border border-[#E8E0D6] shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div className="relative flex-1 max-w-md">
-          <Search size={16} className="absolute left-3 top-2.5 text-slate-400" />
+          <Search size={16} className="absolute left-3 top-2.5 text-[#938A82]" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search recent calls by name, phone..."
-            className="w-full pl-9 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-xl text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#0e3025]"
+            className="w-full pl-9 pr-3 py-1.5 text-xs bg-[#FAF7F2] border border-[#E8E0D6] rounded-xl text-[#39342F] placeholder:text-[#938A82] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
           />
         </div>
 
@@ -51,7 +47,7 @@ export const RecentTab = () => {
           <select
             value={outcomeFilter}
             onChange={(e) => setOutcomeFilter(e.target.value)}
-            className="px-2.5 py-1 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:outline-none"
+            className="px-2.5 py-1 text-xs bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
           >
             <option value="All">All Outcomes</option>
             <option value="Order Closed">Order Closed</option>
@@ -63,7 +59,7 @@ export const RecentTab = () => {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="px-2.5 py-1 text-xs bg-slate-50 border border-slate-200 rounded-lg text-slate-700 focus:outline-none"
+            className="px-2.5 py-1 text-xs bg-[#FAF7F2] border border-[#E8E0D6] rounded-lg text-[#39342F] focus:outline-none focus:ring-2 focus:ring-[#B69A78]"
           >
             <option value="All">All Types</option>
             <option value="Outbound">Outbound</option>
@@ -73,28 +69,28 @@ export const RecentTab = () => {
       </div>
 
       {/* Calls List */}
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
-        <div className="px-5 py-3 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between text-xs font-semibold text-slate-600 uppercase tracking-wider">
+      <div className="bg-white rounded-2xl border border-[#E8E0D6] shadow-xs overflow-hidden">
+        <div className="px-5 py-3 bg-[#FAF7F2] border-b border-[#E8E0D6] flex items-center justify-between text-xs font-semibold text-[#736B63] uppercase tracking-wider">
           <span>Caller & Conversation Time</span>
           <span className="hidden sm:inline">Outcome & SOP Score</span>
         </div>
 
-        <div className="divide-y divide-slate-100">
+        <div className="divide-y divide-[#E8E0D6]/60">
           {filteredCalls.length === 0 ? (
-            <div className="p-8 text-center text-slate-500 text-xs">No recent calls match the filters.</div>
+            <div className="p-8 text-center text-[#736B63] text-xs">No recent calls match the filters.</div>
           ) : (
             filteredCalls.map((call) => (
               <div
                 key={call.id}
                 onClick={() => setSelectedCall(call)}
-                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/80 cursor-pointer transition group"
+                className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-[#FAF7F2]/80 cursor-pointer transition group"
               >
                 <div className="flex items-center gap-3">
                   <div
                     className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
                       call.outcome === 'Order Closed'
-                        ? 'bg-emerald-100 text-emerald-800'
-                        : 'bg-slate-100 text-slate-600'
+                        ? 'bg-[#EFF3EE] text-[#47634B]'
+                        : 'bg-[#F5EFE8] text-[#62564C]'
                     }`}
                   >
                     <PhoneCall size={18} />
@@ -102,24 +98,24 @@ export const RecentTab = () => {
 
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-sm font-bold text-slate-900 group-hover:text-emerald-800 transition">
+                      <span className="text-sm font-bold text-[#39342F] group-hover:text-[#62564C] transition">
                         {call.name}
                       </span>
-                      <span className="text-xs font-mono text-slate-400 hidden sm:inline">
+                      <span className="text-xs font-mono text-[#938A82] hidden sm:inline">
                         {call.phone}
                       </span>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 font-medium">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#FAF7F2] text-[#736B63] font-medium border border-[#E8E0D6]">
                         {call.type}
                       </span>
                     </div>
 
-                    <div className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
-                      <span className="font-semibold text-slate-700">{call.brand}</span>
-                      <span>•</span>
+                    <div className="text-xs text-[#736B63] flex items-center gap-2 mt-0.5">
+                      <span className="font-semibold text-[#62564C]">{call.brand}</span>
+                      <span className="text-[#D4C9BD]">•</span>
                       <span className="flex items-center gap-1">
                         <Clock size={11} /> {call.duration}
                       </span>
-                      <span>•</span>
+                      <span className="text-[#D4C9BD]">•</span>
                       <span>{call.dateTime}</span>
                     </div>
                   </div>
@@ -129,16 +125,16 @@ export const RecentTab = () => {
                 <div className="flex items-center justify-between sm:justify-end gap-3">
                   <div className="text-right">
                     <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
+                      className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${
                         call.outcome === 'Order Closed'
-                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                          : 'bg-slate-100 text-slate-700'
+                          ? 'bg-[#EFF3EE] text-[#47634B] border-[#D4DFD5]'
+                          : 'bg-[#F5EFE8] text-[#8E7252] border-[#E8E0D6]'
                       }`}
                     >
                       {call.outcome}
                     </span>
                     {call.valueClosed && call.valueClosed !== '₹0' && (
-                      <span className="block text-xs font-mono font-bold text-emerald-700 mt-1">
+                      <span className="block text-xs font-mono font-bold text-[#8E7252] mt-1">
                         +{call.valueClosed}
                       </span>
                     )}
@@ -149,9 +145,9 @@ export const RecentTab = () => {
                       e.stopPropagation();
                       setSelectedCall(call);
                     }}
-                    className="px-3 py-1.5 rounded-lg border border-slate-200 text-slate-700 group-hover:bg-[#0e3025] group-hover:text-white group-hover:border-[#0e3025] text-xs font-semibold transition flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-lg border border-[#E8E0D6] text-[#39342F] group-hover:bg-[#62564C] group-hover:text-white group-hover:border-[#62564C] text-xs font-semibold transition flex items-center gap-1.5"
                   >
-                    <Headphones size={13} />
+                    <Headphones size={13} className="text-[#B69A78]" />
                     <span>Review</span>
                     <ArrowRight size={13} />
                   </button>

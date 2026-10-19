@@ -4,14 +4,7 @@ import {
   Play,
   Pause,
   RotateCcw,
-  Volume2,
-  Sparkles,
-  CheckCircle2,
-  Clock,
-  User,
-  Building,
-  FileText,
-  DollarSign
+  Sparkles
 } from 'lucide-react';
 
 export const CallReviewDrawer = ({ call, onClose }) => {
@@ -48,62 +41,62 @@ export const CallReviewDrawer = ({ call, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-xs animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between border-l border-slate-200 animate-in slide-in-from-right duration-300">
+      <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col justify-between border-l border-[#E8E0D6] animate-in slide-in-from-right duration-300">
         {/* Header */}
-        <div className="px-6 py-4 bg-[#0e3025] text-white flex items-center justify-between">
+        <div className="px-6 py-4 bg-[#62564C] text-white flex items-center justify-between">
           <div>
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              <span className="w-2 h-2 rounded-full bg-[#B69A78]" />
               <h3 className="text-sm font-bold text-white">Call Quality & AI Review</h3>
             </div>
-            <p className="text-xs text-emerald-200 mt-0.5">
+            <p className="text-xs text-[#E8E0D6] mt-0.5">
               {call.name} • {call.dateTime}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-emerald-200 hover:text-white hover:bg-white/10 transition"
+            className="p-1 rounded-lg text-[#E8E0D6] hover:text-white hover:bg-white/10 transition"
           >
             <X size={18} />
           </button>
         </div>
 
         {/* Body Content */}
-        <div className="p-6 overflow-y-auto space-y-5 divide-y divide-slate-100 flex-1">
+        <div className="p-6 overflow-y-auto space-y-5 divide-y divide-[#E8E0D6]/60 flex-1">
           {/* Top Call Info */}
           <div>
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-base font-bold text-slate-900">{call.name}</h2>
-                <p className="text-xs text-slate-500 font-mono">{call.phone}</p>
+                <h2 className="text-base font-bold text-[#39342F]">{call.name}</h2>
+                <p className="text-xs text-[#938A82] font-mono">{call.phone}</p>
               </div>
               <span
-                className={`text-xs px-2.5 py-1 rounded-full font-semibold ${
+                className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${
                   call.outcome === 'Order Closed'
-                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
-                    : 'bg-slate-100 text-slate-700'
+                    ? 'bg-[#EFF3EE] text-[#47634B] border-[#D4DFD5]'
+                    : 'bg-[#F5EFE8] text-[#8E7252] border-[#E8E0D6]'
                 }`}
               >
                 {call.outcome}
               </span>
             </div>
 
-            <div className="mt-3 flex items-center gap-3 text-xs text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-              <span className="font-semibold text-slate-800">{call.brand}</span>
-              <span>•</span>
+            <div className="mt-3 flex items-center gap-3 text-xs text-[#736B63] bg-[#FAF7F2] p-2.5 rounded-xl border border-[#E8E0D6]">
+              <span className="font-semibold text-[#39342F]">{call.brand}</span>
+              <span className="text-[#D4C9BD]">•</span>
               <span>{call.duration}</span>
-              <span>•</span>
-              <span className="text-emerald-700 font-medium">{call.type}</span>
+              <span className="text-[#D4C9BD]">•</span>
+              <span className="text-[#62564C] font-medium">{call.type}</span>
             </div>
           </div>
 
           {/* Audio Recording Mock Player */}
           <div className="pt-4 space-y-2">
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <span className="text-xs font-bold text-[#736B63] uppercase tracking-wider block">
               Audio Recording & Waveform
             </span>
 
-            <div className="bg-[#0e3025] text-white rounded-xl p-4 shadow-sm space-y-3">
+            <div className="bg-[#52473E] text-white rounded-xl p-4 shadow-xs space-y-3">
               {/* Waveform Visualization */}
               <div className="h-10 flex items-center justify-between gap-1 px-1">
                 {[30, 60, 45, 90, 75, 40, 85, 95, 60, 30, 80, 50, 70, 40, 90, 65, 45, 80, 30].map(
@@ -114,7 +107,7 @@ export const CallReviewDrawer = ({ call, onClose }) => {
                       <div
                         key={i}
                         className={`w-1 rounded-full transition-all duration-150 ${
-                          isPlayed ? 'bg-amber-400' : 'bg-emerald-800/60'
+                          isPlayed ? 'bg-[#B69A78]' : 'bg-[#73655A]'
                         }`}
                         style={{ height: `${h}%` }}
                       />
@@ -124,9 +117,9 @@ export const CallReviewDrawer = ({ call, onClose }) => {
               </div>
 
               {/* Scrubber Bar */}
-              <div className="w-full bg-emerald-950 h-1.5 rounded-full overflow-hidden">
+              <div className="w-full bg-[#453C34] h-1.5 rounded-full overflow-hidden">
                 <div
-                  className="bg-amber-400 h-full transition-all duration-200"
+                  className="bg-[#B69A78] h-full transition-all duration-200"
                   style={{ width: `${playbackProgress}%` }}
                 />
               </div>
@@ -136,23 +129,23 @@ export const CallReviewDrawer = ({ call, onClose }) => {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={togglePlay}
-                    className="p-2 rounded-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold transition active:scale-95"
+                    className="p-2 rounded-full bg-[#B69A78] hover:bg-[#A48968] text-white font-bold transition active:scale-95"
                   >
                     {isPlaying ? <Pause size={14} /> : <Play size={14} />}
                   </button>
                   <button
                     onClick={handleReset}
-                    className="text-slate-300 hover:text-white"
+                    className="text-[#D4C9BD] hover:text-white"
                     title="Reset to start"
                   >
                     <RotateCcw size={14} />
                   </button>
-                  <span className="font-mono text-emerald-300 text-[11px]">
+                  <span className="font-mono text-[#E8E0D6] text-[11px]">
                     {call.duration}
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-300">
+                <div className="flex items-center gap-1.5 text-[11px] text-[#D4C9BD]">
                   <span>Speed:</span>
                   {[1, 1.25, 1.5].map((spd) => (
                     <button
@@ -160,7 +153,7 @@ export const CallReviewDrawer = ({ call, onClose }) => {
                       onClick={() => setPlaybackSpeed(spd)}
                       className={`px-1.5 py-0.5 rounded font-mono ${
                         playbackSpeed === spd
-                          ? 'bg-amber-400 text-slate-950 font-bold'
+                          ? 'bg-[#B69A78] text-white font-bold'
                           : 'hover:text-white'
                       }`}
                     >
@@ -174,24 +167,24 @@ export const CallReviewDrawer = ({ call, onClose }) => {
 
           {/* AI Sentiment & SOP Score */}
           <div className="pt-4 grid grid-cols-2 gap-3 text-xs">
-            <div className="p-3 bg-emerald-50 rounded-xl border border-emerald-200">
-              <span className="text-[11px] text-emerald-800 font-medium block">SOP Adherence</span>
-              <span className="text-xl font-bold text-emerald-900 font-mono">{call.sopScore || 94}%</span>
-              <p className="text-[10px] text-emerald-700 mt-1">Named shopper + pitched trial</p>
+            <div className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E8E0D6]">
+              <span className="text-[11px] text-[#736B63] font-medium block">SOP Adherence</span>
+              <span className="text-xl font-bold text-[#39342F] font-mono">{call.sopScore || 94}%</span>
+              <p className="text-[10px] text-[#8E7252] mt-1 font-medium">Named shopper + pitched trial</p>
             </div>
-            <div className="p-3 bg-blue-50 rounded-xl border border-blue-200">
-              <span className="text-[11px] text-blue-800 font-medium block">Shopper Sentiment</span>
-              <span className="text-xl font-bold text-blue-900 font-mono">{call.sentiment || 'Positive'}</span>
-              <p className="text-[10px] text-blue-700 mt-1">High purchase confidence</p>
+            <div className="p-3 bg-[#FAF7F2] rounded-xl border border-[#E8E0D6]">
+              <span className="text-[11px] text-[#736B63] font-medium block">Shopper Sentiment</span>
+              <span className="text-xl font-bold text-[#39342F] font-mono">{call.sentiment || 'Positive'}</span>
+              <p className="text-[10px] text-[#736B63] mt-1">High purchase confidence</p>
             </div>
           </div>
 
           {/* Call Notes */}
           <div className="pt-4 space-y-1.5">
-            <span className="text-xs font-bold text-slate-700 uppercase tracking-wider block">
+            <span className="text-xs font-bold text-[#736B63] uppercase tracking-wider block">
               Telecaller Disposition Notes
             </span>
-            <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-700 leading-relaxed">
+            <div className="p-3 bg-[#FAF7F2] border border-[#E8E0D6] rounded-xl text-xs text-[#39342F] leading-relaxed">
               {call.notes || 'No call notes available.'}
             </div>
           </div>
@@ -199,8 +192,8 @@ export const CallReviewDrawer = ({ call, onClose }) => {
           {/* Transcript Snippet */}
           {call.transcript && call.transcript.length > 0 && (
             <div className="pt-4 space-y-2">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-slate-800 uppercase tracking-wider">
-                <Sparkles size={14} className="text-amber-600" />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#39342F] uppercase tracking-wider">
+                <Sparkles size={14} className="text-[#B69A78]" />
                 <span>AI Call Transcript</span>
               </div>
               <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
@@ -208,12 +201,12 @@ export const CallReviewDrawer = ({ call, onClose }) => {
                   <div key={idx} className="text-xs leading-relaxed">
                     <span
                       className={`font-semibold ${
-                        line.speaker === 'Agent' ? 'text-emerald-700' : 'text-amber-800'
+                        line.speaker === 'Agent' ? 'text-[#62564C]' : 'text-[#8E7252]'
                       }`}
                     >
                       {line.speaker}:
                     </span>{' '}
-                    <span className="text-slate-600">{line.text}</span>
+                    <span className="text-[#736B63]">{line.text}</span>
                   </div>
                 ))}
               </div>
@@ -222,10 +215,10 @@ export const CallReviewDrawer = ({ call, onClose }) => {
         </div>
 
         {/* Footer */}
-        <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <div className="p-4 bg-[#FAF7F2] border-t border-[#E8E0D6] flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-white bg-[#0e3025] hover:bg-[#164235] rounded-xl transition"
+            className="px-4 py-2 text-xs font-semibold text-white bg-[#62564C] hover:bg-[#52473E] rounded-xl transition"
           >
             Close Review
           </button>

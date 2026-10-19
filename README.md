@@ -36,7 +36,7 @@ npm run preview
 |---|---|---|
 | **Framework** | **React 19 with Vite 8** | Instant HMR, minimal bundle size (built in 1.3s), modern component architecture. |
 | **Routing** | **React Router v7** | Client-side routing with clean URL state (`/`, `/plan?tab=calls`, `/calendar`, `/pulse`). |
-| **Styling** | **Tailwind CSS v4 & Modular CSS** | Pixel-perfect replication of On-Ground's dark forest-green (`#0e3025`), warm off-white canvas, and amber/gold accents. |
+| **Styling** | **Tailwind CSS v4 & Modular CSS** | Minimalist mocha & cream palette: deep taupe (`#62564C`), warm cream canvas (`#FAF7F2`), white cards (`#FFFFFF`), soft caramel accents (`#B69A78`), dark brown-gray text (`#39342F`), and beige-gray borders (`#E8E0D6`). |
 | **Icons** | **Lucide React** | Consistent, restrained enterprise SaaS iconography. |
 | **Charts** | **Recharts** | Interactive 7-day call volume, connect rate, and conversion revenue charts. |
 | **Telephony Audio** | **Web Audio API** | Real dual-frequency DTMF dial tones (697Hz–1477Hz), authentic ringback tone (400Hz+450Hz cadence), connect chimes, and hangup tones without relying on external MP3 assets. |
@@ -79,8 +79,8 @@ A complete, interactive calling lifecycle powered by the browser's **Web Audio A
 ## 🖥️ Screen Overview
 
 ### 1. App Shell
-- **Dark Forest-Green Sidebar (`#0e3025`)**: On-Ground.ai branding, shift incentive mini-progress bar, navigation links, and a direct outbound dialer trigger.
-- **Dark Top Bar (`#0a241c`)**: Breadcrumbs, calling mode switcher, audio headset status (`Jabra Evolve 20`), agent status dropdown (*Available*, *In Call*, *Wrap-up*, *Break*), and notification center.
+- **Deep Taupe Sidebar (`#62564C`)**: On-Ground.ai branding, shift incentive progress bar, navigation links, and a direct outbound dialer trigger.
+- **Deep Taupe Top Bar (`#574C43`)**: Breadcrumbs, calling mode switcher, audio headset status (`Jabra Evolve 20`), agent status dropdown (*Available*, *In Call*, *Wrap-up*, *Break*), and notification center.
 - **Responsive Mobile Navigation**: Touch-friendly layouts that adapt smoothly to smartphone screens.
 
 ### 2. Dashboard (`/`)
