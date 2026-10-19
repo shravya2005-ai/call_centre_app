@@ -195,9 +195,6 @@ call_centre_app/
 
 ---
 
-## ✉️ Submission Information
 
-- **To**: `mukunda@on-ground.ai`
-- **Subject**: Assignment Submission: Shravya
 - **Repository**: [https://github.com/shravya2005-ai/call_centre_app.git](https://github.com/shravya2005-ai/call_centre_app.git)
-- **Deadline**: Tuesday, 20 October 2026, 10:00 AM IST
+
