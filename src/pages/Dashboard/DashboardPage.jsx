@@ -9,7 +9,8 @@ import {
   Sparkles,
   ArrowRight,
   Building,
-  Target
+  Target,
+  Zap
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -27,7 +28,7 @@ import { useCall } from '../../context/CallContext';
 
 export const DashboardPage = () => {
   const { kpis, leads, openLeadModal, chartData } = useAppData();
-  const { startCall, setIsDialPadOpen } = useCall();
+  const { startCall, setIsDialPadOpen, openExotelCall } = useCall();
   const [chartMetric, setChartMetric] = useState('calls'); // 'calls' | 'revenue'
 
   // Top waiting leads (Score > 85 and status Pending or In Progress)
@@ -63,6 +64,13 @@ export const DashboardPage = () => {
             >
               <Phone size={14} className="text-[#8E7252]" />
               <span>Dial Pad</span>
+            </button>
+            <button
+              onClick={() => openExotelCall(null)}
+              className="px-4 py-2 text-xs font-semibold rounded-xl bg-[#F5EFE8] hover:bg-[#EFE8DE] text-[#39342F] border border-[#E8E0D6] transition flex items-center gap-1.5"
+            >
+              <Zap size={14} className="text-[#B69A78]" />
+              <span>Exotel Real Call</span>
             </button>
             <button
               onClick={() => openLeadModal(waitingLeads[0]?.id || leads[0]?.id)}

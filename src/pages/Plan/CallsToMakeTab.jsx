@@ -7,14 +7,15 @@ import {
   Clock,
   Sparkles,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Zap
 } from 'lucide-react';
 import { useAppData } from '../../context/AppDataContext';
 import { useCall } from '../../context/CallContext';
 
 export const CallsToMakeTab = () => {
   const { leads, openLeadModal } = useAppData();
-  const { startCall } = useCall();
+  const { startCall, openExotelCall } = useCall();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [priorityFilter, setPriorityFilter] = useState('All');
@@ -200,6 +201,15 @@ export const CallsToMakeTab = () => {
                         className="px-3 py-1.5 rounded-xl border border-[#E8E0D6] text-[#39342F] hover:bg-[#FAF7F2] text-xs font-semibold transition"
                       >
                         SOP Guide
+                      </button>
+
+                      <button
+                        onClick={() => openExotelCall(lead)}
+                        className="px-3 py-1.5 rounded-xl bg-[#F5EFE8] hover:bg-[#EFE8DE] border border-[#E8E0D6] text-[#39342F] text-xs font-semibold flex items-center gap-1 transition"
+                        title="Initiate real phone call via Exotel"
+                      >
+                        <Zap size={12} className="text-[#B69A78]" />
+                        <span>Real</span>
                       </button>
 
                       <button

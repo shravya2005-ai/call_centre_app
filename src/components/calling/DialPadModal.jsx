@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Phone, X, Delete, Settings2 } from 'lucide-react';
+import { Phone, X, Delete, Settings2, Zap } from 'lucide-react';
 import { useCall } from '../../context/CallContext';
 import { useAppData } from '../../context/AppDataContext';
 
@@ -11,7 +11,8 @@ export const DialPadModal = () => {
     callingMode,
     setCallingMode,
     playDtmf,
-    setIsTwilioConfigOpen
+    setIsTwilioConfigOpen,
+    openExotelCall,
   } = useCall();
   const { leads } = useAppData();
 
@@ -31,6 +32,19 @@ export const DialPadModal = () => {
 
   const handleCall = () => {
     if (!phoneNumber.trim()) return;
+
+    // If Exotel mode selected, open ExotelCallModal instead
+    if (callingMode === 'exotel') {
+      const contact = selectedLead || {
+        name: 'Direct Dial Contact',
+        phone: phoneNumber,
+        brand: 'On-Ground Retail Partner',
+        product: 'Inquiry Call',
+      };
+      setIsDialPadOpen(false);
+      openExotelCall(contact);
+      return;
+    }
 
     const contact = selectedLead || {
       name: 'Direct Dial Contact',
@@ -83,7 +97,7 @@ export const DialPadModal = () => {
         {/* Calling Mode Selector */}
         <div className="px-6 pt-3 pb-2 flex items-center justify-between bg-[#52473E] border-b border-[#6B5E53] text-xs">
           <span className="text-[#D4C9BD]">Calling Mode:</span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 flex-wrap justify-end">
             <button
               onClick={() => setCallingMode('demo')}
               className={`px-2.5 py-1 rounded-md text-xs font-medium transition ${
@@ -93,6 +107,17 @@ export const DialPadModal = () => {
               }`}
             >
               Demo HD Audio
+            </button>
+            <button
+              onClick={() => setCallingMode('exotel')}
+              className={`px-2.5 py-1 rounded-md text-xs font-medium transition flex items-center gap-1 ${
+                callingMode === 'exotel'
+                  ? 'bg-[#B69A78] text-white shadow-xs'
+                  : 'text-[#D4C9BD] hover:text-white'
+              }`}
+            >
+              <Zap size={11} />
+              Exotel Real Call
             </button>
             <button
               onClick={() => {
@@ -119,6 +144,14 @@ export const DialPadModal = () => {
             </button>
           </div>
         </div>
+
+        {/* Exotel mode hint */}
+        {callingMode === 'exotel' && (
+          <div className="px-6 py-2 bg-[#4A3F36] border-b border-[#6B5E53] text-[11px] text-[#B69A78] flex items-center gap-1.5">
+            <Zap size={11} />
+            Exotel mode: Click Call to open the real phone calling interface.
+          </div>
+        )}
 
         {/* Quick select from priority leads */}
         <div className="px-6 py-2.5 border-b border-[#6B5E53] bg-[#52473E]">
@@ -188,8 +221,11 @@ export const DialPadModal = () => {
             disabled={!phoneNumber.trim()}
             className="w-full py-3.5 rounded-xl bg-[#B69A78] hover:bg-[#A48968] disabled:opacity-40 text-white font-semibold flex items-center justify-center gap-2 shadow-md transition active:scale-98"
           >
-            <Phone size={18} />
-            <span>Call {selectedLead ? selectedLead.name.split(' ')[0] : phoneNumber || 'Number'}</span>
+            {callingMode === 'exotel' ? <Zap size={18} /> : <Phone size={18} />}
+            <span>
+              {callingMode === 'exotel' ? 'Open Exotel Dialer' : 'Call'}{' '}
+              {selectedLead ? selectedLead.name.split(' ')[0] : phoneNumber || 'Number'}
+            </span>
           </button>
         </div>
       </div>

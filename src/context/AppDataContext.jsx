@@ -9,6 +9,7 @@ import {
   initialChartData,
   initialKpis
 } from '../data/initialData';
+import { fetchCallHistory } from '../services/exotelApi';
 
 const AppDataContext = createContext();
 
@@ -96,6 +97,52 @@ export const AppDataProvider = ({ children }) => {
   useEffect(() => {
     localStorage.setItem('onground_kpis', JSON.stringify(kpis));
   }, [kpis]);
+
+  // Synchronize persisted call history from the Exotel backend
+  useEffect(() => {
+    fetchCallHistory()
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.calls) && data.calls.length > 0) {
+          setRecentCalls((prev) => {
+            const existingIds = new Set(prev.map((c) => c.id || c.callId));
+            const newFromBackend = data.calls
+              .filter((c) => !existingIds.has(c.callId))
+              .map((c) => ({
+                id: c.callId,
+                name: c.customerName || 'Customer ' + c.customerNumber,
+                phone: c.customerNumber,
+                brand: 'Exotel Telephony',
+                product: 'PSTN Call',
+                type: 'Exotel Outbound',
+                dateTime: c.createdAt
+                  ? new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                  : 'Recently',
+                duration:
+                  c.duration ||
+                  (c.durationSeconds
+                    ? `${Math.floor(c.durationSeconds / 60)}m ${c.durationSeconds % 60}s`
+                    : '0m 0s'),
+                durationSeconds: c.durationSeconds || 0,
+                outcome: c.outcome || (c.status === 'completed' ? 'Call Completed' : c.status),
+                sentiment: 'Neutral',
+                sopScore: 90,
+                notes: c.notes || 'Logged via Exotel',
+                valueClosed: '₹0',
+                recordingUrl: c.recordingUrl,
+                transcript: [
+                  { speaker: 'System', text: `Exotel Call SID: ${c.exotelCallSid || 'N/A'}` },
+                  { speaker: 'Agent', text: `Called from ${c.agentNumber}` },
+                  { speaker: 'Customer', text: `Answered on ${c.customerNumber}` },
+                ],
+              }));
+
+            if (newFromBackend.length === 0) return prev;
+            return [...newFromBackend, ...prev];
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Lead modal controls
   const openLeadModal = (leadId) => {

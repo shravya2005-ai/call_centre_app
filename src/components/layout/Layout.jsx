@@ -6,10 +6,17 @@ import { CallModal } from '../calling/CallModal';
 import { DialPadModal } from '../calling/DialPadModal';
 import { CallDispositionModal } from '../calling/CallDispositionModal';
 import { TwilioConfigModal } from '../calling/TwilioConfigModal';
+import { ExotelCallModal } from '../calling/ExotelCallModal';
 import { LeadDetailsModal } from '../leads/LeadDetailsModal';
+import { useCall } from '../../context/CallContext';
 
-export const Layout = () => {
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+const LayoutInner = ({ isMobileOpen, setIsMobileOpen }) => {
+  const {
+    isExotelModalOpen,
+    setIsExotelModalOpen,
+    exotelPrefillContact,
+    handleExotelCallComplete,
+  } = useCall();
 
   return (
     <div className="min-h-screen flex bg-[#FAF7F2] text-[#39342F]">
@@ -34,6 +41,19 @@ export const Layout = () => {
       <CallDispositionModal />
       <TwilioConfigModal />
       <LeadDetailsModal />
+
+      {/* Exotel Real Phone Calling Modal */}
+      <ExotelCallModal
+        isOpen={isExotelModalOpen}
+        onClose={() => setIsExotelModalOpen(false)}
+        prefillCustomer={exotelPrefillContact}
+        onCallComplete={handleExotelCallComplete}
+      />
     </div>
   );
+};
+
+export const Layout = () => {
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  return <LayoutInner isMobileOpen={isMobileOpen} setIsMobileOpen={setIsMobileOpen} />;
 };

@@ -1,200 +1,395 @@
-# On-Ground.ai — Call Centre App (Working Product)
+# On-Ground.ai Call Centre App — Real Phone Calling with Exotel
 
-A high-performance, responsive Call Centre application engineered for **On-Ground.ai**, built for telecallers and retail agents who manage walk-out recovery, lead scoring, live calling, and AI role agents throughout their shift.
-
-Developed for the **On-Ground.ai Engineering Hire Assignment**.
+> **On-Ground.ai** is an AI-powered call centre platform for retail store follow-ups, featuring real PSTN telephone calling via Exotel, lead management, call history, calendar scheduling, and the Pulse AI collaboration channel.
 
 ---
 
-## 🌟 Live Demo & Quick Start
+## Architecture Overview
 
-```bash
-# 1. Clone the repository
-git clone https://github.com/shravya2005-ai/call_centre_app.git
-cd call_centre_app
-
-# 2. Install dependencies
-npm install
-
-# 3. Start the development server
-npm run dev
+```
+┌─────────────────────────────────────────────────────────────┐
+│                     Browser (React + Vite)                   │
+│  Dashboard │ Plan │ Calendar │ Pulse │ Exotel Call Modal     │
+└───────────────────────┬─────────────────────────────────────┘
+                        │ HTTP (fetch)
+                        ▼
+┌─────────────────────────────────────────────────────────────┐
+│          Node.js + Express Backend (port 3001)              │
+│  POST /api/calls/initiate                                    │
+│  GET  /api/calls/status/:callId                             │
+│  GET  /api/calls/history                                     │
+│  POST /api/calls/hangup                                      │
+│  POST /api/calls/webhook/:callId  ← Exotel StatusCallback   │
+└───────────────────────┬─────────────────────────────────────┘
+                        │ HTTPS (Basic Auth)
+                        ▼
+┌─────────────────────────────────────────────────────────────┐
+│          Exotel Cloud Telephony (India Cluster)              │
+│  api.in.exotel.com/v1/Accounts/{sid}/Calls/connect          │
+│                                                              │
+│  Flow:                                                       │
+│  1. Exotel calls AGENT's mobile phone                        │
+│  2. Agent answers their physical phone                       │
+│  3. Exotel dials CUSTOMER's mobile phone                     │
+│  4. Both are bridged — real call in progress                 │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-Open [http://localhost:5173/](http://localhost:5173/) in Google Chrome or any modern browser.
-
-To verify a production build:
-```bash
-npm run build
-npm run preview
-```
+**Key Design Decisions:**
+- Exotel API credentials are **never** in frontend code — all API calls go through the Express backend.
+- The backend holds credentials in environment variables only.
+- Call status updates arrive via Exotel webhook callbacks (requires public HTTPS URL).
+- Frontend also polls for status every 3 seconds as a fallback.
 
 ---
 
-## 🛠️ Technology Stack & Architectural Decisions
-
-| Layer | Technology | Rationale |
-|---|---|---|
-| **Framework** | **React 19 with Vite 8** | Instant HMR, minimal bundle size (built in 1.3s), modern component architecture. |
-| **Routing** | **React Router v7** | Client-side routing with clean URL state (`/`, `/plan?tab=calls`, `/calendar`, `/pulse`). |
-| **Styling** | **Tailwind CSS v4 & Modular CSS** | Minimalist mocha & cream palette: deep taupe (`#62564C`), warm cream canvas (`#FAF7F2`), white cards (`#FFFFFF`), soft caramel accents (`#B69A78`), dark brown-gray text (`#39342F`), and beige-gray borders (`#E8E0D6`). |
-| **Icons** | **Lucide React** | Consistent, restrained enterprise SaaS iconography. |
-| **Charts** | **Recharts** | Interactive 7-day call volume, connect rate, and conversion revenue charts. |
-| **Telephony Audio** | **Web Audio API** | Real dual-frequency DTMF dial tones (697Hz–1477Hz), authentic ringback tone (400Hz+450Hz cadence), connect chimes, and hangup tones without relying on external MP3 assets. |
-| **State & Persistence** | **React Context & `localStorage`** | Zero-backend architecture: leads, disposition notes, call history, channels, and calendar events persist across page refreshes. |
-
----
-
-## 📞 Working Calling Feature (Core Requirement)
-
-Mock screens alone are not enough. This application provides **genuine calling workflows** with three distinct operational modes:
-
-### Mode 1 — Twilio Voice WebRTC Architecture (PSTN Integration)
-- Integrated configuration drawer accessible from the top bar or dial pad.
-- Fully documents the enterprise-grade client-side WebRTC token handshake with a secure backend issuing short-lived `Twilio.jwt.AccessToken` tokens.
-- Eliminates client-side credential exposure while providing live connection testing.
-
-### Mode 2 — High-Definition Local Demo Calling Engine (Default)
-A complete, interactive calling lifecycle powered by the browser's **Web Audio API**:
-1. **Dialing & Connecting**: Initiates connection route with carrier latency simulation.
-2. **Ringing**: Emits real dual-frequency telephone ringback tones (`400Hz + 450Hz`).
-3. **Connected Call**:
-   - Connection chime plays when answered.
-   - Live running duration timer (`00:01`, `00:02`...).
-   - Dynamic SVG audio waveform visualizer.
-   - Interactive in-call controls: **Mute / Unmute**, **Hold / Resume**, **Speaker toggle**, and **DTMF Keypad** (emits real DTMF tones when pressed).
-   - Real-time conversation cues and AI live transcript with On-Ground's core rule: *"Name the shopper for +23.6pp conversion lift"*.
-4. **Call Wrap-up & Disposition Modal**:
-   - Triggers immediately after hanging up.
-   - Agent selects outcome (*Order Closed / Won*, *Follow-up Scheduled*, *Callback Requested*, *Left Voicemail*, *Not Interested*).
-   - Closed deals capture transaction value (₹) and automatically calculate the telecaller's shift incentive.
-   - Includes **"✨ AI Draft Note"** to auto-summarize key objections.
-   - Follow-up date/time picker automatically syncs new events into the **Calendar**.
-   - Instantly updates **Recent Calls** and **Dashboard KPIs**.
-
-### Mode 3 — Native `tel:` Protocol
-- Directly opens the device's native calling client (FaceTime, Windows Phone Link, Skype, or mobile dialer) via `tel:` URI.
-
----
-
-## 🖥️ Screen Overview
-
-### 1. App Shell
-- **Deep Taupe Sidebar (`#62564C`)**: On-Ground.ai branding, shift incentive progress bar, navigation links, and a direct outbound dialer trigger.
-- **Deep Taupe Top Bar (`#574C43`)**: Breadcrumbs, calling mode switcher, audio headset status (`Jabra Evolve 20`), agent status dropdown (*Available*, *In Call*, *Wrap-up*, *Break*), and notification center.
-- **Responsive Mobile Navigation**: Touch-friendly layouts that adapt smoothly to smartphone screens.
-
-### 2. Dashboard (`/`)
-- **Shift Greeting & Target Progress**: Live shift duration indicator, active partner queues (*The Sleep Company* & *Furnishka*), and visual milestone bar toward the ₹8,000 daily goal.
-- **KPI Cards**: Total Leads, Calls Made, Closed Conversions (+23.6pp lift), Tasks Pending, and Today's Incentive Earnings.
-- **"Who is Waiting" Alert Section**: Detects shoppers who exited physical stores in the last 2 hours without purchasing, giving direct "Call Now" shortcuts before competitor quotes expire.
-- **Priority Task Queue**: Leads ranked by score with click-to-open Leads Modal and direct call actions.
-- **Earnings Summary & 7-Day Charts**: Recharts bar chart for daily call volume and area chart for conversion revenue (₹).
-
-### 3. Plan Page (`/plan`)
-Organized into 4 specialized tabs:
-- **Calls to Make**: Leads ranked by score (96 down to 71), search by name/product, filter by priority (*Hot*, *Warm*, *Cold*) and store brand, expandable context rows with buying signals and SOP scripts, working pagination, and Call buttons.
-- **Incoming**: Missed calls list displaying **Value at Stake** (e.g. ₹52,000), urgency badges, and a **Call Back** button on every row.
-- **Recent**: Complete call history with duration, type, and outcome filters. Clicking any row opens the **Call Review Drawer**, featuring a simulated audio player with interactive waveform scrubbing, playback speed (1x, 1.25x, 1.5x), SOP compliance score (94%), sentiment score, and full AI call transcript.
-- **Practise a Call (Bonus)**: AI Pitch Coach roleplay simulator allowing telecallers to practice difficult objections (*Skeptical buyer*, *Demanding 10% discount*, *Delivery constraint*) with simulated AI customer feedback.
-
-### 4. Leads Modal (with Paging)
-- Triggered by clicking any lead on the Dashboard or Plan table.
-- Displays ICP Fit Score (e.g. 94%) and Lead Intent Score (98%) with visual progress meters.
-- **Collapsible Buying Signals**: Categorized into *Financing Related*, *Quotation Demanded*, *Warranty Related*, and *Competitor Mentioned*.
-- Recommended Telecaller SOP Pitch.
-- `< Previous` and `Next >` paging controls to cycle seamlessly through all assigned leads.
-- In-App Call Lead and Phone Call (`tel:`) buttons.
-
-### 5. Calendar Page (`/calendar`)
-- Interactive monthly calendar grid for **October 2026** (matching assignment date).
-- Month switcher controls with a quick **"Today"** reset button.
-- Color-coded event dots on dates with scheduled callbacks.
-- Day Agenda view with details and a direct **"Call Now"** button for each event.
-- **Schedule Follow-up Modal**: Schedule new calls with lead selection, date, time, priority, and notes, persisted in `localStorage`.
-
-### 6. Pulse Page (`/pulse`)
-- **Pulse Home**:
-  - AvaniBot AI assistant hero banner.
-  - 5 AI Role Agents: *Walk-out Recovery Agent*, *Pitch Coach Agent*, *ASM Agent*, *Tele-caller Agent*, and *Follow-up Bot* with live status, metrics, and efficiency ratings.
-  - Channels list with unread counters.
-  - Kudos and team shoutouts feed.
-- **Pulse Channel Chat (`#walkouts-the-sleep-company`)**:
-  - Back button navigation.
-  - **Pinned "Needs your input" card**: Displays walk-out exception details (*Mukunda Dwarkanath discount exception*), two interactive decision buttons (*Approve Free Pillows Combo*, *Offer Flat ₹1,500 Instant Cashback*), and a custom input reply box.
-  - Interactive chat stream with distinct sender bubbles, timestamps, and automatic intelligent responses simulated by AvaniBot.
-
----
-
-## 🎯 Bonus Items Delivered
-
-- [x] **Send a message in a channel**: Working interactive chat composer with simulated AI responses.
-- [x] **Answer the "Needs your input" card**: Interactive approval buttons and custom instruction submission that resolves the card and posts confirmation to the channel.
-- [x] **Practise a call and Call back**: Interactive AI Pitch Coach simulator and working Call Back buttons on all missed call rows.
-- [x] **Works on phone-width screen**: Mobile hamburger drawer, responsive grids, and touch-friendly controls.
-- [x] **Charts with Recharts**: Interactive 7-day call volume and revenue area charts with custom tooltips.
-
----
-
-## 🤖 AI Tools Disclosure
-
-In accordance with On-Ground.ai's instructions:
-- **Antigravity AI (Google DeepMind)** was utilized as an agentic pair-programming assistant for rapid project scaffolding, component assembly, and architectural validation.
-- All business logic, Web Audio API telephony synthesis, data structures, and styling tokens were specifically designed and reviewed to match the assignment requirements.
-
----
-
-## 📁 Repository Structure
+## Project Structure
 
 ```
 call_centre_app/
-├── index.html                       # Entry HTML with Inter font & favicon
-├── package.json                     # Dependencies & scripts
-├── vite.config.js                   # Vite config with Tailwind CSS plugin
-├── src/
-│   ├── main.jsx                     # Application entry point
-│   ├── App.jsx                      # Router & Context provider setup
-│   ├── index.css                    # Design system tokens & Tailwind CSS
-│   ├── context/
-│   │   ├── AppDataContext.jsx       # Global persistence, leads, calls, calendar, channels
-│   │   └── CallContext.jsx          # Telephony lifecycle, audio tones, timer, active call
-│   ├── utils/
-│   │   └── soundEffects.js          # Web Audio API generator (DTMF, ringback, connect, hangup)
-│   ├── data/
-│   │   └── initialData.js           # Sample enterprise retail data (The Sleep Company, Furnishka, etc.)
+├── src/                          # React Frontend
 │   ├── components/
-│   │   ├── layout/
-│   │   │   ├── Sidebar.jsx          # Dark forest-green sidebar
-│   │   │   ├── Topbar.jsx           # Slim top navigation bar
-│   │   │   └── Layout.jsx           # Shell container with modal layer
 │   │   ├── calling/
-│   │   │   ├── CallModal.jsx        # Active call screen with waveform & controls
-│   │   │   ├── DialPadModal.jsx     # Outbound dialer with DTMF audio
-│   │   │   ├── CallDispositionModal.jsx # Post-call outcome & notes logging
-│   │   │   └── TwilioConfigModal.jsx# Mode 1 WebRTC setup & documentation
-│   │   └── leads/
-│   │       └── LeadDetailsModal.jsx # ICP/intent scores, buying signals, paging
+│   │   │   ├── ExotelCallModal.jsx    ★ NEW — Real phone calling UI
+│   │   │   ├── CallModal.jsx          Existing demo call UI
+│   │   │   ├── DialPadModal.jsx       Updated — Exotel mode added
+│   │   │   ├── CallDispositionModal.jsx
+│   │   │   └── TwilioConfigModal.jsx
+│   │   └── layout/
+│   │       ├── Layout.jsx             Updated — ExotelCallModal wired
+│   │       └── Sidebar.jsx            Updated — Exotel Real Call button
+│   ├── context/
+│   │   ├── CallContext.jsx            Updated — Exotel state + handlers
+│   │   └── AppDataContext.jsx
+│   ├── services/
+│   │   └── exotelApi.js              ★ NEW — Backend API client
 │   └── pages/
-│       ├── Dashboard/
-│       │   └── DashboardPage.jsx    # KPIs, waiting alert, tasks, Recharts
-│       ├── Plan/
-│       │   ├── PlanPage.jsx         # Sub-tab router
-│       │   ├── CallsToMakeTab.jsx   # Ranked leads with pagination & expand
-│       │   ├── IncomingTab.jsx      # Missed calls with Call Back action
-│       │   ├── RecentTab.jsx        # Call history with review trigger
-│       │   ├── CallReviewDrawer.jsx # Audio mock player & SOP review
-│       │   └── PractiseCallTab.jsx  # AI pitch coach simulator
-│       ├── Calendar/
-│       │   ├── CalendarPage.jsx     # Month grid, day agenda, Call Now action
-│       │   └── ScheduleModal.jsx    # Schedule follow-up modal
-│       └── Pulse/
-│           ├── PulsePage.jsx        # Pulse router
-│           ├── PulseHome.jsx        # AvaniBot, 5 role agents, channels, kudos
-│           ├── PulseChannel.jsx     # Channel chat stream
-│           └── NeedsInputCard.jsx   # Pinned exception approval card
+│       ├── Dashboard/DashboardPage.jsx  Updated — Exotel button
+│       └── Plan/CallsToMakeTab.jsx      Updated — Real/Demo call buttons
+│
+├── server/                       # Node.js + Express Backend
+│   ├── index.js                  ★ NEW — Full Exotel integration
+│   ├── package.json
+│   ├── .env                      ★ Fill in your Exotel credentials
+│   ├── .env.example              Template (safe to commit)
+│   └── .gitignore
+│
+├── start-backend.bat             ★ NEW — One-click backend start
+├── start-all.bat                 ★ NEW — Start both servers
+├── vite.config.js                Updated — Proxy to backend
+└── README.md                     This file
 ```
 
 ---
 
+## Prerequisites
 
-- **Repository**: [https://github.com/shravya2005-ai/call_centre_app.git](https://github.com/shravya2005-ai/call_centre_app.git)
+- **Node.js** 18+ ([nodejs.org](https://nodejs.org))
+- **Exotel account** ([my.exotel.com](https://my.exotel.com)) — required for real calls
+- **ngrok** (optional, for webhook callbacks in local dev) — [ngrok.com/download](https://ngrok.com/download)
 
+---
+
+## Installation
+
+### 1. Install Frontend Dependencies
+
+```bash
+# In the project root
+npm install
+```
+
+### 2. Install Backend Dependencies
+
+```bash
+cd server
+npm install
+```
+
+---
+
+## Exotel Account Setup
+
+> **This is required to make actual phone calls.**
+
+1. **Create an Exotel account** at [my.exotel.com](https://my.exotel.com) (India accounts).
+
+2. **Get API credentials:**
+   - Go to **Settings → API Settings**
+   - Note your: **API Key**, **API Token**, **Account SID**
+
+3. **Buy an ExoPhone (virtual number):**
+   - Go to **Manage → Buy Numbers**
+   - Purchase an Indian virtual number — this is your **ExoPhone (CallerId)**
+
+4. **Authorise test numbers** (for trial accounts):
+   - Exotel trial accounts can only call numbers that are verified/authorised
+   - Go to **Settings → Authorised Numbers** and add your mobile numbers
+
+---
+
+## Backend Setup
+
+### Configure Credentials
+
+```bash
+# In the server/ directory
+cp .env.example .env
+```
+
+Edit `server/.env`:
+
+```env
+EXOTEL_API_KEY=your_api_key
+EXOTEL_API_TOKEN=your_api_token
+EXOTEL_ACCOUNT_SID=your_account_sid
+EXOTEL_EXOPHONE=+91XXXXXXXXXX   # Your ExoPhone number
+PORT=3001
+FRONTEND_URL=http://localhost:5173
+WEBHOOK_BASE_URL=https://your-ngrok-url.ngrok.io
+```
+
+### Start the Backend
+
+```bash
+# Option 1: Direct node
+cd server
+node index.js
+
+# Option 2: With auto-reload (development)
+cd server
+npx nodemon index.js
+
+# Option 3: Windows batch file (from project root)
+start-backend.bat
+```
+
+Verify it's running:
+```
+http://localhost:3001/health
+```
+
+---
+
+## Frontend Setup
+
+```bash
+# In the project root
+npx vite
+```
+
+Frontend runs at: **http://localhost:5173**
+
+### Start Everything at Once (Windows)
+
+Double-click **`start-all.bat`** in the project root — this opens two terminal windows (backend + frontend).
+
+---
+
+## Webhook Configuration
+
+Exotel calls your webhook URL to report call status updates (ringing, answered, completed, etc.).
+
+### Local Development (ngrok)
+
+```bash
+# Terminal 1 — Start backend
+cd server && node index.js
+
+# Terminal 2 — Start ngrok tunnel
+ngrok http 3001
+```
+
+ngrok gives you a URL like `https://abc123.ngrok.io`.
+
+Update `server/.env`:
+```env
+WEBHOOK_BASE_URL=https://abc123.ngrok.io
+```
+
+Restart the backend.
+
+**How it works:** When a call is made, the backend sends `https://abc123.ngrok.io/api/calls/webhook/{callId}` to Exotel. Exotel POSTs status updates to this URL.
+
+### Production
+
+Deploy the backend to a cloud service (Railway, Render, Fly.io, AWS EC2, etc.) and set:
+```env
+WEBHOOK_BASE_URL=https://your-production-domain.com
+```
+
+---
+
+## How to Make the First Real Phone Call
+
+> Both phone numbers must be Indian mobile numbers (Exotel India cluster).
+
+### Method 1: Dashboard → "Exotel Real Call" Button
+
+1. Open `http://localhost:5173`
+2. Click **"Exotel Real Call"** button in the top-right of the Dashboard
+3. Enter:
+   - **Your mobile number** (agent) — e.g., `9876543210`
+   - **Customer name** — e.g., `Test Customer`
+   - **Customer mobile** — e.g., `9123456789`
+4. Click **"Call [Customer Name]"**
+5. **Your phone rings** — answer it
+6. Exotel connects you with the customer
+7. Talk via actual phone network
+8. End the call by hanging up your phone
+9. The call record appears in **Plan → Recent Calls**
+
+### Method 2: Sidebar → "Exotel Real Call"
+
+Click the **⚡ Exotel Real Call** button in the left sidebar — same interface.
+
+### Method 3: Plan → Calls to Make → "Real" button
+
+In the **Plan** page, each lead row has a **⚡ Real** button that pre-fills the customer's details.
+
+### Method 4: Outbound Dial Pad → Exotel mode
+
+1. Click **"Open Outbound Dialer"** in the sidebar
+2. Switch mode to **"Exotel Real Call"**
+3. Enter/select a phone number
+4. Click **"Open Exotel Dialer"**
+
+---
+
+## How Call Status Updates Work
+
+```
+Agent clicks Call
+       │
+       ▼
+Backend → Exotel API → Call SID returned
+       │
+       ▼
+Frontend polls GET /api/calls/status/:callId every 3 sec
+       │
+       ▼
+Exotel POSTs to /api/calls/webhook/:callId (requires public URL)
+  • Status: queued → ringing → in-progress → completed/busy/failed
+
+UI shows:
+  Initiating → Agent Ringing → Customer Connecting → Connected → Completed
+```
+
+---
+
+## Testing Call History
+
+After every completed call:
+
+1. The disposition modal may auto-trigger (if using demo mode)
+2. For Exotel calls, the record is automatically saved when the call completes
+3. View in **Plan → Recent Calls** tab
+4. The **Dashboard** KPI stats update (calls made today, conversions, revenue)
+5. Each call record shows: name, phone, duration, status, outcome, notes
+
+---
+
+## API Reference
+
+### POST /api/calls/initiate
+
+```json
+{
+  "agentNumber": "9876543210",
+  "customerNumber": "9123456789",
+  "customerName": "Mukunda Dwarkanath",
+  "agentName": "Akshat Rajan",
+  "notes": "Walked out of Indiranagar store"
+}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "callId": "uuid-...",
+  "exotelCallSid": "...",
+  "status": "initiating",
+  "message": "Call initiated. Your phone will ring shortly."
+}
+```
+
+### GET /api/calls/status/:callId
+
+Returns current status of a call.
+
+### GET /api/calls/history
+
+Returns all call records (most recent first).
+
+### POST /api/calls/hangup
+
+```json
+{ "callId": "uuid-..." }
+```
+
+> **Note:** Exotel v1 API does not support programmatic hangup via REST. The agent must hang up their physical phone. This endpoint marks the call as ended locally.
+
+### POST /api/calls/webhook/:callId
+
+Exotel StatusCallback handler (Exotel posts here automatically).
+
+---
+
+## Error Handling
+
+| Error Code | Cause | Resolution |
+|---|---|---|
+| `MISSING_CREDENTIALS` | .env not filled | Add Exotel credentials to `server/.env` |
+| `AUTH_FAILURE` | Wrong API key/token | Check Settings → API in Exotel dashboard |
+| `INVALID_AGENT_NUMBER` | Not a valid Indian mobile | Use 10-digit number starting with 6-9 |
+| `INVALID_CUSTOMER_NUMBER` | Not a valid Indian mobile | Use 10-digit number starting with 6-9 |
+| `INSUFFICIENT_BALANCE` | No credits | Top up your Exotel account |
+| `INVALID_REQUEST` | ExoPhone not set up | Verify ExoPhone number in Exotel dashboard |
+| Backend unreachable | Server not running | Run `cd server && node index.js` |
+| Call shows "No Answer" | Customer didn't pick up | Try again or verify number |
+| Call shows "Busy" | Customer busy | Retry later |
+| Webhook not updating | ngrok not running | Start ngrok and update WEBHOOK_BASE_URL |
+
+---
+
+## Known Limitations
+
+1. **Exotel v1 no programmatic hangup:** Exotel's v1 REST API doesn't support ending a call programmatically. The agent must hang up their physical phone. The "End Call" button marks the call as ended locally and informs the agent.
+
+2. **In-memory call store:** Call records are stored in server memory and lost on server restart. For production, replace with a database (SQLite, PostgreSQL, MongoDB).
+
+3. **Webhook requires public URL:** Status updates via webhooks require a publicly accessible HTTPS endpoint. For local development, use ngrok. Without a webhook URL, the frontend polls every 3 seconds instead.
+
+4. **Trial account limitations:** Exotel trial accounts can only call pre-verified mobile numbers. Add both agent and customer numbers to "Authorised Numbers" in the Exotel dashboard.
+
+5. **India cluster only:** This integration uses the India-specific endpoint (`api.in.exotel.com`). For other regions, the base URL needs adjustment.
+
+6. **Mute/Hold:** Mute and hold controls in the existing demo UI are not wired to Exotel (not supported by Exotel v1 REST API — these would require DTMF signalling or Exotel's WebRTC SDK).
+
+---
+
+## Development Notes
+
+### Running in Demo Mode
+
+The existing "Demo HD Audio" mode still works without any Exotel credentials — it simulates a call with sound effects and AI transcript for demonstration purposes.
+
+### Switching Between Modes
+
+- **Demo Mode:** Click "Open Outbound Dialer" → select "Demo HD Audio"
+- **Exotel Real Call:** Click "⚡ Exotel Real Call" button anywhere in the app
+- **tel: Link:** Opens device's native phone dialer
+
+---
+
+## Deployment
+
+For production deployment:
+
+1. Deploy the Express backend to a service (Railway, Render, Fly.io, etc.)
+2. Set all environment variables in the cloud service
+3. Update `WEBHOOK_BASE_URL` to your production domain
+4. Build the frontend: `npx vite build`
+5. Deploy the `dist/` folder to a CDN or static hosting (Vercel, Netlify, etc.)
+6. Set `VITE_BACKEND_URL` environment variable to your backend URL in the frontend build config

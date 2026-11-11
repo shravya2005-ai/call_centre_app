@@ -6,14 +6,15 @@ import {
   CalendarDays,
   Sparkles,
   Phone,
-  Flame
+  Flame,
+  Zap
 } from 'lucide-react';
 import { useCall } from '../../context/CallContext';
 import { useAppData } from '../../context/AppDataContext';
 
 export const Sidebar = ({ isMobileOpen, closeMobile }) => {
   const location = useLocation();
-  const { setIsDialPadOpen } = useCall();
+  const { setIsDialPadOpen, openExotelCall } = useCall();
   const { kpis, incomingCalls } = useAppData();
 
   const pendingIncomingCount = incomingCalls.filter((c) => c.status !== 'Resolved').length;
@@ -147,7 +148,7 @@ export const Sidebar = ({ isMobileOpen, closeMobile }) => {
           </nav>
 
           {/* Quick Calling Trigger */}
-          <div className="px-4 mt-6">
+          <div className="px-4 mt-6 space-y-2">
             <button
               onClick={() => {
                 if (closeMobile) closeMobile();
@@ -157,6 +158,16 @@ export const Sidebar = ({ isMobileOpen, closeMobile }) => {
             >
               <Phone size={14} />
               <span>Open Outbound Dialer</span>
+            </button>
+            <button
+              onClick={() => {
+                if (closeMobile) closeMobile();
+                openExotelCall(null);
+              }}
+              className="w-full py-2.5 px-3 rounded-xl bg-[#52473E] hover:bg-[#453C34] border border-[#76675B] text-[#FAF7F2] text-xs font-semibold flex items-center justify-center gap-2 shadow-xs transition active:scale-98"
+            >
+              <Zap size={14} className="text-[#B69A78]" />
+              <span>Exotel Real Call</span>
             </button>
           </div>
         </div>

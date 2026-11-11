@@ -9,7 +9,11 @@ export const CallProvider = ({ children }) => {
 
   // Call states: 'idle' | 'connecting' | 'ringing' | 'connected' | 'ended'
   const [callState, setCallState] = useState('idle');
-  const [callingMode, setCallingMode] = useState('demo'); // 'demo' | 'twilio' | 'tel'
+  const [callingMode, setCallingMode] = useState('demo'); // 'demo' | 'exotel' | 'twilio' | 'tel'
+
+  // Exotel modal state
+  const [isExotelModalOpen, setIsExotelModalOpen] = useState(false);
+  const [exotelPrefillContact, setExotelPrefillContact] = useState(null);
   const [activeContact, setActiveContact] = useState(null);
   const [callDuration, setCallDuration] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
@@ -34,6 +38,38 @@ export const CallProvider = ({ children }) => {
   // Practice call state
   const [isPracticeMode, setIsPracticeMode] = useState(false);
   const [practiceScenario, setPracticeScenario] = useState(null);
+
+  // Open Exotel modal pre-filled with a contact
+  const openExotelCall = (contact) => {
+    setExotelPrefillContact(contact || null);
+    setIsExotelModalOpen(true);
+  };
+
+  // Called when an Exotel call completes — log it in AppData
+  const handleExotelCallComplete = (callResult) => {
+    if (!callResult) return;
+    logFinishedCall({
+      contact: {
+        name: callResult.customerName || 'Unknown Customer',
+        phone: callResult.customerNumber || '',
+        brand: exotelPrefillContact?.brand || 'On-Ground Retail Partner',
+        product: exotelPrefillContact?.product || 'Phone Inquiry',
+        leadId: exotelPrefillContact?.id || exotelPrefillContact?.leadId || null,
+      },
+      durationSeconds: callResult.durationSeconds || 0,
+      outcome: callResult.outcome || (
+        callResult.status === 'completed' ? 'Call Completed' :
+        callResult.status === 'busy'      ? 'Customer Busy' :
+        callResult.status === 'no-answer' ? 'No Answer' :
+        callResult.status === 'failed'    ? 'Call Failed' :
+        'Call Ended'
+      ),
+      notes: callResult.notes || `Exotel call. SID: ${callResult.exotelCallSid || 'N/A'}`,
+      dealValue: callResult.dealValue || null,
+      nextFollowUpDate: null,
+    });
+    setIsExotelModalOpen(false);
+  };
 
   const timerRef = useRef(null);
   const speechTimeoutRef = useRef(null);
@@ -219,6 +255,12 @@ export const CallProvider = ({ children }) => {
         setTwilioConfig,
         isPracticeMode,
         practiceScenario,
+        // Exotel real calling
+        isExotelModalOpen,
+        setIsExotelModalOpen,
+        exotelPrefillContact,
+        openExotelCall,
+        handleExotelCallComplete,
         startCall,
         startPracticeCall,
         endCall,
