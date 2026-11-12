@@ -137,8 +137,8 @@ function normalizeIndianNumber(raw) {
  */
 function exotelAuth() {
   return {
-    username: process.env.EXOTEL_API_KEY,
-    password: process.env.EXOTEL_API_TOKEN,
+    username: (process.env.EXOTEL_API_KEY || '').trim(),
+    password: (process.env.EXOTEL_API_TOKEN || '').trim(),
   };
 }
 
@@ -146,7 +146,7 @@ function exotelAuth() {
  * Exotel v1 API base URL for India cluster.
  */
 function exotelBaseUrl() {
-  const sid = process.env.EXOTEL_ACCOUNT_SID;
+  const sid = (process.env.EXOTEL_ACCOUNT_SID || '').trim();
   return `https://api.in.exotel.com/v1/Accounts/${sid}`;
 }
 
@@ -265,7 +265,7 @@ app.post('/api/calls/initiate', callLimiter, async (req, res) => {
     const exotelPayload = qs.stringify({
       From: agentE164,         // Exotel calls the AGENT first
       To: customerE164,         // Then connects to CUSTOMER
-      CallerId: process.env.EXOTEL_EXOPHONE,  // Your Exotel virtual number
+      CallerId: (process.env.EXOTEL_EXOPHONE || '').trim(),  // Your Exotel virtual number
       Record: 'true',           // Record the call
       StatusCallback: statusCallbackUrl,
       StatusCallbackEvents: ['terminal'],
